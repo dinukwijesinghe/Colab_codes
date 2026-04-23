@@ -1,0 +1,29 @@
+from google.colab import drive
+drive.mount('/content/drive')
+
+import os
+from PIL import Image
+
+# Change these paths to your folders
+input_folder = "/content/drive/MyDrive/Animal Clips/Leopard Videos datasets/Set 6/DCIM/101XERA_IMG"
+output_folder = "/content/drive/MyDrive/thermal_only"
+
+os.makedirs(output_folder, exist_ok=True)
+
+for file in os.listdir(input_folder):
+    if file.lower().endswith((".jpg", ".jpeg", ".png")):
+
+        img_path = os.path.join(input_folder, file)
+        img = Image.open(img_path)
+
+        w, h = img.size
+
+        # If thermal IR is on the RIGHT side:
+        thermal = img.crop((w // 2, 0, w, h))
+
+        out_path = os.path.join(output_folder, file)
+        thermal.save(out_path)
+
+        print("Cropped thermal part from:", file)
+
+print("✔ All done! Check your 'thermal_only' folder.")
