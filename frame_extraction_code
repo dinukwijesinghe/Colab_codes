@@ -1,0 +1,23 @@
+from google.colab import drive
+drive.mount('/content/drive')
+
+import os
+import glob
+
+video_dir = "/content/drive/MyDrive/Leopard"
+output_root = "/content/drive/MyDrive/Output"
+
+!apt-get install -y ffmpeg
+
+video_files =  glob.glob(os.path.join(video_dir, '*.mp4'))
+
+print("Found", len(video_files), "videos")
+
+for video_path in video_files:
+  base_name = os.path.splitext(os.path.basename(video_path))[0]
+  output_dir = os.path.join(output_root, base_name + "_images")
+  os.makedirs(output_dir, exist_ok=True)
+
+  !ffmpeg -i "$video_path" -vf fps=1 "$output_dir/%04d.jpg"
+
+  print(f" Done extracting frames for {base_name}, saved in {output_dir}")
